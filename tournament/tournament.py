@@ -6,35 +6,60 @@
 import psycopg2
 
 
+"""Connect to the PostgreSQL database.  Returns a database connection."""
 def connect():
-    """Connect to the PostgreSQL database.  Returns a database connection."""
-    return psycopg2.connect("dbname=tournament")
+    return psycopg2.connect("dbname=tournament").cursor()
+
+def dc(): 
+    return psycopg2.close()
 
 
+"""Remove all the match records from the database."""
 def deleteMatches():
-    """Remove all the match records from the database."""
+    cursor = connect() 
+    query = "delete from matches;"
+    cursor.execute( query )
+    cursor.commit()  
+    dc()
+    
 
 
+"""Remove all the player records from the database."""
 def deletePlayers():
-    """Remove all the player records from the database."""
+    cursor = connect() 
+    query = "delete from players;"
+    cursor.execute( query )
+    cursor.commit()
+    dc()
 
 
+"""Returns the number of players currently registered."""
 def countPlayers():
-    """Returns the number of players currently registered."""
+    cursor = connect() 
+    query = "select count(*) from players;"
+    cursor.execute( query )
+    result = cursor.fetchall()
+    dc()
+    return result[0]
 
 
-def registerPlayer(name):
-    """Adds a player to the tournament database.
+"""Adds a player to the tournament database.
+def registerPlayer(input_name):
+    cursor = connect() 
+    query = "insert into players (name) values (name);"
+    cursor.execute( query )
+    cursor.commit()
+    dc()
   
-    The database assigns a unique serial id number for the player.  (This
-    should be handled by your SQL database schema, not in your Python code.)
-  
-    Args:
-      name: the player's full name (need not be unique).
-    """
-
-
 def playerStandings():
+    cursor = connect() 
+    query = "select standings.id, players.name, standings.wins, standings.matches_played " +
+            " from standings join players order by standings.wins;"
+    cursor.execute( query )
+    results = cursor.fetchall()
+    dc()
+    return results;
+  
     """Returns a list of the players and their win records, sorted by wins.
 
     The first entry in the list should be the player in first place, or a player
@@ -50,6 +75,12 @@ def playerStandings():
 
 
 def reportMatch(winner, loser):
+    cursor = connect() 
+    query = "insert into matches (winner, loser) values (input_winner, input_loser);"
+    cursor.execute( query )
+    cursor.commit()
+    dc()
+  
     """Records the outcome of a single match between two players.
 
     Args:
