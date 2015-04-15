@@ -43,7 +43,7 @@ def countPlayers():
     return result[0]
 
 
-"""Adds a player to the tournament database.
+"""Adds a player to the tournament database."""
 def registerPlayer(input_name):
     cursor = connect() 
     query = "insert into players (name) values (name);"
@@ -60,7 +60,8 @@ def playerStandings():
     dc()
     return results;
   
-    """Returns a list of the players and their win records, sorted by wins.
+    """
+    Returns a list of the players and their win records, sorted by wins.
 
     The first entry in the list should be the player in first place, or a player
     tied for first place if there is currently a tie.
