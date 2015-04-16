@@ -8,7 +8,7 @@ import psycopg2
 
 """Connect to the PostgreSQL database.  Returns a database connection."""
 def connect():
-    return psycopg2.connect("dbname=tournament").cursor()
+    return psycopg2.connect("dbname=tournament user=postgres password=password  host=localhost")
 
 def dc(): 
     return psycopg2.close()
@@ -16,48 +16,53 @@ def dc():
 
 """Remove all the match records from the database."""
 def deleteMatches():
-    cursor = connect() 
+    db = connect()
+    cursor = db.cursor()
     query = "delete from matches;"
     cursor.execute( query )
-    cursor.commit()  
-    dc()
+    db.commit()  
+    db.close()
     
 
 
 """Remove all the player records from the database."""
 def deletePlayers():
-    cursor = connect() 
+    db = connect()
+    cursor = db.cursor()
     query = "delete from players;"
     cursor.execute( query )
-    cursor.commit()
-    dc()
+    db.commit()
+    db.close()
 
 
 """Returns the number of players currently registered."""
 def countPlayers():
-    cursor = connect() 
+    db = connect()
+    cursor = db.cursor()
     query = "select count(*) from players;"
     cursor.execute( query )
     result = cursor.fetchall()
-    dc()
+    db.close()
+    print result
     return result[0]
 
 
 """Adds a player to the tournament database."""
 def registerPlayer(input_name):
-    cursor = connect() 
+    db = connect()
+    cursor = db.cursor()
     query = "insert into players (name) values (name);"
     cursor.execute( query )
     cursor.commit()
-    dc()
+    db.close()
   
 def playerStandings():
-    cursor = connect() 
-    query = "select standings.id, players.name, standings.wins, standings.matches_played " +
-            " from standings join players order by standings.wins;"
+    db = connect()
+    cursor = db.cursor()
+    query = "select standings.id, players.name, standings.wins, standings.matches_played " + " from standings join players order by standings.wins;"
     cursor.execute( query )
     results = cursor.fetchall()
-    dc()
+    db.close()
     return results;
   
     """
@@ -76,11 +81,12 @@ def playerStandings():
 
 
 def reportMatch(winner, loser):
-    cursor = connect() 
+    db = connect()
+    cursor = db.cursor()
     query = "insert into matches (winner, loser) values (input_winner, input_loser);"
     cursor.execute( query )
     cursor.commit()
-    dc()
+    db.close();
   
     """Records the outcome of a single match between two players.
 
