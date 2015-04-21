@@ -23,7 +23,7 @@ def testCount():
         raise TypeError(
             "countPlayers() should return numeric zero, not string '0'.")
     if c != 0:
-        raise ValueError("After deleting, countPlayers should return zero.")
+        raise ValueError("After deleting, countPlayers should return zero. c is : %s"  % c)
     print "3. After deleting, countPlayers() returns zero."
 
 
@@ -36,7 +36,6 @@ def testRegister():
         raise ValueError(
             "After one player registers, countPlayers() should be 1.")
     print "4. After registering a player, countPlayers() returns 1."
-
 
 def testRegisterCountDelete():
     deleteMatches()

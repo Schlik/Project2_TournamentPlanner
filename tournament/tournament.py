@@ -41,7 +41,7 @@ def countPlayers():
     cursor = db.cursor()
     query = "select count(*) from players;"
     cursor.execute( query )
-    result = cursor.fetchall()
+    result = cursor.fetchone()
     db.close()
     print result
     return result[0]
@@ -51,15 +51,24 @@ def countPlayers():
 def registerPlayer(input_name):
     db = connect()
     cursor = db.cursor()
-    query = "insert into players (name) values (name);"
+    query = "insert into players (name) values ('%s');" % input_name
     cursor.execute( query )
-    cursor.commit()
+    db.commit()
+    query = "select id from players where name = players.name;" 
+    cursor.execute(query)
+    player_id = cursor.fetchone()
+
+    #ERROR RIGHT HERE : 
+    query = "insert into standings (player_id, matches_played, wins ) values ( %s, 0, 0);",  player_id 
+    cursor.execute( *query )
+    db.commit()
     db.close()
+   
   
 def playerStandings():
     db = connect()
     cursor = db.cursor()
-    query = "select standings.id, players.name, standings.wins, standings.matches_played " + " from standings join players order by standings.wins;"
+    query = "select standings.id, players.name, standings.wins, standings.matches_played from standings join players on players.id = standings.id order by standings.wins;"
     cursor.execute( query )
     results = cursor.fetchall()
     db.close()
